@@ -1,0 +1,35 @@
+.calendar {
+    padding:15px 15px 10px 10px;
+   
+}
+.title {
+    text-align: center;
+}
+#days {
+    width: 100%;
+}
+#days th {
+    background: limegreen;
+}
+#days th, #days td {
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    font-size: 12px;
+    text-align: center;
+}
+#days tr, #days tbody {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    width: 100%;
+}
+#days td {
+    cursor: pointer;
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+}
+#incident {
+    width:50%;
+}

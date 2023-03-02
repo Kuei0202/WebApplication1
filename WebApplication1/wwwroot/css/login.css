@@ -1,0 +1,28 @@
+﻿* {
+    font-family: 'Poppins'
+}
+
+.container{
+    padding:16px;
+}
+body {
+    user-select: none;
+    overflow-y: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: hsl(218deg 50% 91%);
+    height: 100vh;
+}
+form {
+    border: 3px solid #f1f1f1;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 14px 20px 10px 10px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}

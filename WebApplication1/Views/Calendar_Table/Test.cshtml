@@ -1,0 +1,124 @@
+﻿@using WebApplication1.Models
+@model WebApplication1.Models.Calendar_Table
+@{
+    Layout = null;
+    ViewData["Title"] = "Test";
+    var scheds = ViewBag.List;
+    DateTime select_time = ViewBag.Current;
+
+    Dictionary<DateTime, List<string>> hash = new Dictionary<DateTime, List<string>>();
+    foreach(var item in scheds)
+    {
+        if (!hash.ContainsKey(item.Item_Date))
+        {
+            List<string> dates = new List<string>() { };
+            dates.Add(item.Item_Content);
+            hash.Add(item.Item_Date,dates);
+        }
+        else   
+        {
+            hash[item.Item_Date].Add(item.Item_Content);
+        }
+    }
+}
+@functions{
+    
+    void generate_current_month_day(Dictionary<DateTime, List<string>> hash,DateTime time)
+    {
+        int firstday_day = (int)new DateTime(time.Year, time.Month,1).DayOfWeek,
+        daysinmonth = DateTime.DaysInMonth(time.Year, time.Month),
+        weeks =(int) Math.Ceiling((double)(firstday_day+daysinmonth-1)/7),
+        daycount = 1-firstday_day,
+        cont=daycount;
+        DateTime pass_days = new DateTime(time.Year,time.Month,1);
+
+        for (int t = 0; t < weeks; t++)
+        {
+            <thead>
+               <tr>
+                    @for(int i = 0; i < 7; i++)
+                    {
+                        if (daycount > 0 && daycount <= daysinmonth)
+                        {
+                            <th>
+                                @daycount
+                            </th>
+                        }
+                         else
+                        {
+                            <th>
+                                        
+                            </th>
+                        }
+                        daycount += 1;
+                    }
+               </tr>
+            </thead>
+            <tbody>
+               <tr>
+                    @for(int j = 0; j < 7; j++)
+                    {
+                        <td id="@cont">
+                        @if(cont==pass_days.Day&&hash.ContainsKey(pass_days))
+                        {
+                            for(int k = 0; k < hash[pass_days].Count; k++)
+                            {
+                                <p>@hash[pass_days][k]</p>
+                            }
+                        }    
+                        </td>
+                        if (cont > 0 && cont < daysinmonth)
+                        {
+                            pass_days=pass_days.AddDays(1);
+                        }
+                        cont++;
+                    }
+               </tr>
+            </tbody>
+        }
+    }
+
+}
+<!DOCTYPE html>
+<html>
+    <head>
+    
+     <meta charset="utf-8">
+    <link  rel="stylesheet" href="~/css/cal.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/lib/jquery/dist/jquery.js" asp-append-version="true"></script>
+    <script src="~/js/script.js" asp-append-version="true"></script>
+    
+    </head>
+    <body>
+        <div class="calendar">
+            <div class="title">
+                <input type="button" class="btn btn-outline-success" id="prev" value="Prev" onclick="location.href='@Url.Action("Update", "Calendar_Table",new{mode=0,tm = select_time})'"/>
+                @select_time.Year - @select_time.Month  - @select_time.Day
+                <input type="button" class="btn btn-outline-success" id="next" value="Next" onclick="location.href='@Url.Action("Update", "Calendar_Table",new{mode=1,tm = select_time})'"/>
+            </div>
+            <table id="days" class="table">
+                @{generate_current_month_day(hash,select_time);}
+            </table>
+
+            <form action="@Url.Action("Test","Calendar_Table",new{tm = select_time})" method="post">
+                
+                <input type="text" id="incident" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="incident" required>
+                <select id="date_select" name="day">
+                    @{
+                        int daysinmonth = DateTime.DaysInMonth(select_time.Year, select_time.Month);
+                        for (int i = 1; i <= daysinmonth; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+                <button id="button" type="submit" class="btn btn-outline-success">新增</button>
+
+            </form>
+            
+        </div>
+        
+    </body>
+    
+</html>
