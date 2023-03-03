@@ -8,9 +8,12 @@ namespace WebApplication1.Controllers
     public class AccountController : Controller
     {
         private readonly WebApplication1Context _context;
-        public AccountController(WebApplication1Context context)
+        private readonly ILogger<AccountController> _logger;
+        public AccountController(WebApplication1Context context, ILogger<AccountController> logger)
         {
             _context = context;
+            _logger = logger;
+            _logger.LogDebug(1, "NLog injected into HomeController");
         }
         public IActionResult Index()
         {
@@ -18,6 +21,7 @@ namespace WebApplication1.Controllers
         }
         public ActionResult Login()
         {
+            _logger.LogInformation("這是登入畫面");
             return View(new User_account());
         }
 
@@ -46,6 +50,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Register(Temp_User_Data user_data)
         {
+            _logger.LogInformation("Exception Handle 1");
             if (user_data.Password != user_data.Password2)
             {
                 ViewBag.msg = "輸入密碼不一致";

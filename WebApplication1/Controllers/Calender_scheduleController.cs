@@ -8,10 +8,12 @@ namespace WebApplication1.Controllers
     {
         DateTime current = DateTime.Now;
         private readonly WebApplication1Context _context;
-
-        public Calendar_TableController(WebApplication1Context context)
+        private readonly  ILogger<Calendar_TableController> _logger;
+        public Calendar_TableController(WebApplication1Context context,ILogger<Calendar_TableController> logger)
         {
+            _logger = logger;
             _context = context;
+            _logger.LogDebug(1, "NLog injected into HomeController");
         }
 
         
@@ -38,7 +40,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Test(IFormCollection form,DateTime tm)
         {
-            
+            _logger.LogInformation("Exception Handle 2");
             string date = form["day"].ToString();
             
             string content = form["incident"];
@@ -58,7 +60,7 @@ namespace WebApplication1.Controllers
             _context.SaveChanges();
 
             var list = _context.Calendar_Table.Where(p => p.Item_Date.Year == tm.Year
-            && p.Item_Date.Month == tm.Month).ToList();
+            && p.Item_Date.Month == tm.Month && p.Create_User == HttpContext.Session.GetString("Name")).ToList();
             ViewBag.List = list;
             ViewBag.Current = tm;
            
